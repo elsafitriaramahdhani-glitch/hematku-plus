@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hematku Plus</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#eef6ff}
+.header{background:url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800') center/cover;height:190px;display:flex;align-items:flex-end;color:white}
+.header div{background:linear-gradient(transparent,rgba(0,0,0,.7));width:100%;padding:16px}
+.header h1{margin:0;font-size:28px}
+.header p{margin:4px 0 0}
+.card{background:white;margin:-20px 14px 14px;border-radius:16px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.1);position:relative}
+.saldo{text-align:center}
+.saldo small{color:#888}
+.saldo h2{font-size:32px;margin:6px 0;color:#0a7a42}
+.row{display:flex;gap:10px}
+.box{flex:1;background:#f5f5f5;border-radius:12px;padding:10px;text-align:center}
+.box b{font-size:18px}
+.in{color:green}.out{color:red}
+input,select{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:10px}
+button{width:100%;padding:12px;border:0;border-radius:10px;background:#0a7a42;color:white;font-weight:bold;font-size:16px}
+.item{display:flex;justify-content:space-between;background:white;padding:12px;border-radius:12px;margin:8px 14px}
+.item small{color:#888}
+.del{border:0;background:#ffecec;color:red;border-radius:8px;padding:6px 10px}
+</style>
+</head>
+<body>
+<div class="header"><div><h1>💰 Hematku Plus</h1><p>Catat uangmu, jadi lebih hemat!</p></div></div>
+<div class="card saldo"><small>Total Saldo</small><h2 id="saldo">Rp 0</h2><div class="row"><div class="box">Masuk<br><b class="in" id="masuk">Rp 0</b></div><div class="box">Keluar<br><b class="out" id="keluar">Rp 0</b></div></div></div>
+<div class="card"><input id="nama" placeholder="Contoh: Jajan, Gaji, Nabung"><input id="jumlah" type="number" placeholder="Jumlah Rp"><select id="tipe"><option value="masuk">Uang Masuk</option><option value="keluar">Uang Keluar</option></select><button onclick="tambah()">+ Tambah Catatan</button></div>
+<div id="list"></div>
+<script>
+let data=JSON.parse(localStorage.getItem('hematku')||'[]');
+function tampil(){let m=0,k=0;let h='';
+data.forEach((d,i)=>{if(d.tipe=='masuk')m+=d.jumlah;else k+=d.jumlah;h+=`<div class="item"><div><b>${d.nama}</b><br><small>${d.tipe=='masuk'?'Masuk':'Keluar'}</small></div><div><b class="${d.tipe=='masuk'?'in':'out'}">${d.tipe=='masuk'?'+':'-'} Rp ${d.jumlah.toLocaleString('id-ID')}</b> <button class="del" onclick="hapus(${i})">x</button></div></div>`});
+document.getElementById('saldo').innerText='Rp '+(m-k).toLocaleString('id-ID');
+document.getElementById('masuk').innerText='Rp '+m.toLocaleString('id-ID');
+document.getElementById('keluar').innerText='Rp '+k.toLocaleString('id-ID');
+document.getElementById('list').innerHTML=h||'<p style="text-align:center;color:#888">Belum ada catatan</p>';}
+function tambah(){let n=document.getElementById('nama').value;let j=parseInt(document.getElementById('jumlah').value);let t=document.getElementById('tipe').value;if(!n||!j){alert('Isi nama & jumlah dulu!');return}data.unshift({nama:n,jumlah:j,tipe:t});localStorage.setItem('hematku',JSON.stringify(data));document.getElementById('nama').value='';document.getElementById('jumlah').value='';tampil()}
+function hapus(i){data.splice(i,1);localStorage.setItem('hematku',JSON.stringify(data));tampil()}
+tampil();
+</script>
+</body>
+</html>
